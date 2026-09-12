@@ -1,0 +1,213 @@
+<title>Checked Out</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,600&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#EFEBE3; --surface:#F8F5EF; --raise:#FFFFFF; --sunk:#E5E0D5;
+    --ink:#1A1714; --muted:#6B655B; --faint:#948D80; --line:#D8D1C4; --line-2:#C6BDAC;
+    --accent:#4A3E8E; --accent-soft:#E2DEF1;
+    --elec:#B07C22; --elec-soft:#F2E6CE;
+    --warn:#A8372B; --good:#2F6B52;
+    --shadow:0 1px 2px rgba(26,23,20,.05),0 14px 40px rgba(26,23,20,.09);
+    --r:16px; --r-sm:10px;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --paper:#13120F; --surface:#1B1A16; --raise:#22211C; --sunk:#0E0D0B;
+    --ink:#EBE8DE; --muted:#9B9488; --faint:#6C665C; --line:#2A2822; --line-2:#3A372F;
+    --accent:#A79ADF; --accent-soft:#221E36;
+    --elec:#D9AC5B; --elec-soft:#2A2213;
+    --warn:#E07A6B; --good:#6FBC9E;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 16px 46px rgba(0,0,0,.45);
+  }}
+  :root[data-theme="dark"]{
+    --paper:#13120F; --surface:#1B1A16; --raise:#22211C; --sunk:#0E0D0B;
+    --ink:#EBE8DE; --muted:#9B9488; --faint:#6C665C; --line:#2A2822; --line-2:#3A372F;
+    --accent:#A79ADF; --accent-soft:#221E36;
+    --elec:#D9AC5B; --elec-soft:#2A2213;
+    --warn:#E07A6B; --good:#6FBC9E;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 16px 46px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:26px 22px 80px;position:relative}
+  .serif{font-family:"Fraunces","Georgia",serif}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+  .masthead{border-bottom:2.5px solid var(--ink);padding-bottom:16px;margin-bottom:6px}
+  .eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-right:46px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .eyebrow .accent{color:var(--accent);font-weight:600}
+  h1.title{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(44px,10vw,88px);line-height:.92;letter-spacing:-.025em;
+    margin:14px 0 10px;text-wrap:balance}
+  h1.title em{font-style:italic;color:var(--accent)}
+  .dek{font-family:"Fraunces",serif;font-size:clamp(16px,2.4vw,20px);font-weight:400;color:var(--muted);max-width:64ch;line-height:1.45}
+  .dek b{color:var(--ink);font-weight:600}
+  .themebtn{position:absolute;top:26px;right:22px;background:var(--surface);border:1px solid var(--line);color:var(--muted);
+    width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:15px}
+  .themebtn:hover{color:var(--ink);border-color:var(--line-2)}
+
+  .stripe{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);
+    border-radius:var(--r-sm);overflow:hidden;margin:22px 0 4px}
+  .stripe > div{background:var(--surface);padding:12px 14px}
+  .stripe .v{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;letter-spacing:-.02em}
+  .stripe .k{font-size:11px;color:var(--faint);line-height:1.35;margin-top:3px}
+  @media(max-width:680px){.stripe{grid-template-columns:repeat(2,1fr)}}
+
+  section{margin:46px 0 0}
+  h2{font-family:"Fraunces",serif;font-size:clamp(24px,4vw,33px);font-weight:600;letter-spacing:-.02em;margin:0 0 6px;line-height:1.1}
+  h2 .num{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);letter-spacing:.14em;
+    display:block;font-weight:600;margin-bottom:8px}
+  .lede{color:var(--muted);max-width:66ch;margin:0 0 18px;font-size:15.5px}
+  .lede b{color:var(--ink);font-weight:600}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 12px;box-shadow:var(--shadow)}
+  canvas{display:block;width:100%;touch-action:pan-y}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin:10px 2px 2px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:11px;height:11px;border-radius:3px;flex:none;display:inline-block}
+  .readout{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);min-height:18px;margin:8px 2px 0}
+  .readout b{color:var(--ink)}
+
+  .note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;border-radius:0 var(--r-sm) var(--r-sm) 0;
+    font-size:14px;color:var(--ink);margin:16px 0;line-height:1.55}
+  .note.warn{background:transparent;border:1px solid var(--line);border-left:3px solid var(--warn)}
+  .note b{font-weight:600}
+
+  .ctrls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+  button.pill{background:var(--surface);border:1px solid var(--line);color:var(--muted);border-radius:999px;
+    padding:6px 13px;font:inherit;font-size:13px;cursor:pointer}
+  button.pill[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  button.pill:hover{border-color:var(--line-2)}
+
+  input.search{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:var(--r-sm);
+    padding:10px 13px;font:inherit;font-size:15px;width:100%;max-width:440px}
+  input.search:focus{outline:2px solid var(--accent);outline-offset:1px}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600;
+    cursor:pointer;user-select:none;white-space:nowrap;position:sticky;top:0;background:var(--surface)}
+  th[aria-sort]{color:var(--accent)}
+  td.mono,th.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+  .scroll{overflow:auto;max-height:460px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+  tbody tr:hover{background:var(--sunk)}
+  .down{color:var(--warn)} .up{color:var(--good)}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:760px){.grid3{grid-template-columns:1fr}}
+  .mini h3{font-size:13.5px;margin:0 0 2px;font-weight:600}
+  .mini p{margin:0 0 8px;font-size:12px;color:var(--faint);line-height:1.35;min-height:32px}
+
+  .libcard{background:var(--raise);border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 15px;margin-top:12px}
+  .libcard h3{margin:0;font-size:17px;font-family:"Fraunces",serif}
+  .libcard .sub{font-size:12px;color:var(--faint);margin:2px 0 8px;font-family:"IBM Plex Mono",monospace}
+  .libstats{display:flex;flex-wrap:wrap;gap:20px;font-size:11.5px;color:var(--faint);margin-top:10px}
+  .libstats b{display:block;font-family:"IBM Plex Mono",monospace;font-size:17px;color:var(--ink);font-weight:600}
+  .hits{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);
+    border-radius:var(--r-sm);overflow:hidden;margin-top:10px;max-height:290px;overflow-y:auto}
+  .hits button{all:unset;background:var(--surface);padding:9px 12px;cursor:pointer;font-size:13.5px;display:block;width:100%;box-sizing:border-box}
+  .hits button:hover,.hits button:focus-visible{background:var(--accent-soft)}
+  .hits .st{color:var(--faint);font-size:11.5px;font-family:"IBM Plex Mono",monospace}
+
+  details.methods{margin-top:40px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:0 16px}
+  details.methods summary{cursor:pointer;padding:14px 0;font-weight:600;font-size:14px;list-style:none;display:flex;justify-content:space-between}
+  details.methods summary::-webkit-details-marker{display:none}
+  details.methods summary::after{content:"+";color:var(--accent);font-family:"IBM Plex Mono",monospace}
+  details.methods[open] summary::after{content:"\2212"}
+  details.methods > div{padding:0 0 16px;font-size:14px;color:var(--muted);line-height:1.62}
+  details.methods h4{color:var(--ink);font-size:12px;margin:18px 0 5px;text-transform:uppercase;letter-spacing:.08em}
+  details.methods code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--sunk);padding:1px 5px;border-radius:4px}
+  footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--faint);line-height:1.7}
+  a{color:var(--accent)}
+</style>
+
+<div class="wrap">
+  <button class="themebtn" id="theme" title="Switch theme" aria-label="Switch theme">&#9680;</button>
+
+  <header class="masthead">
+    <div class="eyebrow">
+      <span>Quick Projects</span>
+      <span class="accent">Public Libraries Survey &middot; FY1992&ndash;FY2023</span>
+    </div>
+    <h1 class="title">Checked <em>Out</em></h1>
+    <p class="dek" id="dek"></p>
+  </header>
+
+  <div class="stripe" id="stripe"></div>
+  <p class="readout" id="stripe-note"></p>
+
+  <section>
+    <h2><span class="num">01 &middot; THE HEADLINE HIDES A SPLIT</span>What a library circulates</h2>
+    <p class="lede" id="lede1"></p>
+    <div class="card">
+      <div class="ctrls">
+        <button class="pill" id="m-abs" aria-pressed="true">Items</button>
+        <button class="pill" id="m-pc" aria-pressed="false">Per person</button>
+      </div>
+      <canvas id="stack" height="360"></canvas>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--accent)"></i> Physical items</span>
+        <span><i class="sw" style="background:var(--elec)"></i> Electronic materials</span>
+        <span><i class="sw" style="background:var(--line-2)"></i> FY1992 physical level</span>
+      </div>
+      <p class="readout" id="stack-read"></p>
+    </div>
+    <div class="note" id="note-split"></div>
+  </section>
+
+  <section>
+    <h2><span class="num">02 &middot; THE DIVERGENCE</span>More money, fewer people</h2>
+    <p class="lede" id="lede2"></p>
+    <div class="card">
+      <canvas id="index" height="340"></canvas>
+      <div class="legend" id="index-legend"></div>
+      <p class="readout" id="index-read"></p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03 &middot; WHAT GREW INSTEAD</span>The other counters</h2>
+    <p class="lede" id="lede3"></p>
+    <div class="grid3" id="minis"></div>
+  </section>
+
+  <section>
+    <h2><span class="num">04 &middot; BY STATE</span>Where the drop landed</h2>
+    <p class="lede" id="lede4"></p>
+    <div class="ctrls">
+      <button class="pill" id="s-phys" aria-pressed="true">Physical per person</button>
+      <button class="pill" id="s-vis" aria-pressed="false">Visits per person</button>
+    </div>
+    <div class="card"><canvas id="slope" height="440"></canvas>
+      <p class="readout" id="slope-read"></p></div>
+    <div class="scroll" style="margin-top:14px"><table id="sttable"></table></div>
+  </section>
+
+  <section>
+    <h2><span class="num">05 &middot; ONE LIBRARY AT A TIME</span>Find yours</h2>
+    <p class="lede" id="lede5"></p>
+    <input class="search" id="q" placeholder="Search by library name, city or state&hellip;" autocomplete="off">
+    <div class="hits" id="hits" hidden></div>
+    <div id="libpane"></div>
+  </section>
+
+  <section>
+    <h2><span class="num">06 &middot; THE MISSING YEAR</span>Why this stops at FY2023</h2>
+    <p class="lede" id="lede6"></p>
+    <div class="card"><canvas id="gap" height="320"></canvas>
+      <p class="readout" id="gap-read"></p></div>
+  </section>
+
+  <details class="methods">
+    <summary>Methods, and where not to push this</summary>
+    <div id="methods"></div>
+  </details>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const D = __DATA__;
+__APP__
+</script>

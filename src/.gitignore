@@ -1,0 +1,8 @@
+# Raw downloads and the intermediates built from them. All regenerable:
+# 01_download.sh refetches, 02_parse.py rebuilds the panel, 03_series.py the payload.
+raw/
+extracted/
+panel.json
+# the four 10-year BLS windows; cpi.json is the merged result and IS tracked,
+# because it makes a rebuild deterministic without hitting the API again
+cpi_[0-9]*.json

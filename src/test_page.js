@@ -66,6 +66,11 @@ function mkEl(id) {
     },
     fire: (k, ev) => (listeners[k] || []).forEach(fn => fn(ev))
   };
+  // In a browser canvas.width/height ARE the attributes. Modelling that is what lets
+  // this test catch a redraw that reads its size back from an attribute it just wrote.
+  for (const dim of ["width", "height"]) Object.defineProperty(el, dim, {
+    get: () => +el.getAttribute(dim), set: v => el.setAttribute(dim, String(v))
+  });
   return el;
 }
 function get(id) { return elements[id] || (elements[id] = mkEl(id)); }
@@ -141,6 +146,19 @@ console.log("\n  ok  FY2024 excluded, " + D.fy2024.missing + " entities missing"
 const circ = Buffer.from(D.libs.circ, "base64");
 assert.strictEqual(circ.length, D.libs.n * D.libs.ny * 4, "circ array length mismatch");
 console.log("  ok  " + D.libs.n + " libraries x " + D.libs.ny + " years decoded");
+
+/* Hover redraws must not resize the canvas. setup() once read its CSS height back from
+ * the height attribute after writing height * devicePixelRatio into it, so every hover
+ * doubled the canvas until the browser painted it white. */
+console.log("\nhover stability:");
+for (const [id, ev] of [["stack", {clientX: 400}], ["index", {clientX: 400}],
+                        ["slope", {clientX: 400, clientY: 200}]]) {
+  const cv = get(id), before = cv.height;
+  for (let i = 0; i < 12; i++) cv.fire("pointermove", ev);
+  assert(before > 0 && cv.height === before,
+         id + " canvas grew under hover: " + before + " -> " + cv.height);
+  console.log("  ok  " + id + " canvas keeps its size across 12 hover redraws (" + before + ")");
+}
 
 /* exercise the interactions the stub can reach */
 get("stack").fire("pointermove", {clientX: 400});

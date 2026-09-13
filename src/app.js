@@ -104,7 +104,12 @@ document.getElementById("lede6").innerHTML =
 function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 function setup(cv) {
   const dpr = Math.min(devicePixelRatio || 1, 2);
-  const w = cv.clientWidth, h = +cv.getAttribute("height");
+  // The markup height is the CSS height. Read it once and pin it: assigning cv.height
+  // below rewrites that same attribute, so reading it again on the next redraw would
+  // double the canvas on every hover event until the browser gives up and paints white.
+  const h = +(cv.dataset.h || (cv.dataset.h = cv.getAttribute("height")));
+  cv.style.height = h + "px";
+  const w = cv.clientWidth;
   cv.width = w * dpr; cv.height = h * dpr;
   const g = cv.getContext("2d");
   g.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -342,7 +347,7 @@ function drawSlope() {
 }
 slopeCv.addEventListener("pointermove", e => {
   const r = slopeCv.getBoundingClientRect(), rows = stateRows();
-  const h = +slopeCv.getAttribute("height"), T = 26, B = 26, L = 60, R = 60;
+  const h = +slopeCv.dataset.h, T = 26, B = 26, L = 60, R = 60;
   const max = Math.max.apply(null, rows.map(q => Math.max(q.a, q.b))) * 1.06;
   const yv = v => h - B - (h - B - T) * (v / max);
   const x = e.clientX - r.left, y = e.clientY - r.top;
